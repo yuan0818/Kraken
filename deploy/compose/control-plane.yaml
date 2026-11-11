@@ -1,0 +1,90 @@
+# M0 deployment template. Configure secrets, host, trust and backups before Linux deployment.
+name: kraken
+x-app: &app
+  build:
+    context: ../..
+    dockerfile: deploy/compose/Dockerfile
+    target: base
+  image: kraken:m0
+  env_file: ../../.env
+  environment: &app-env
+    DATABASE_URL: postgresql+psycopg://platform:${POSTGRES_PASSWORD:?required}@postgres:5432/platform
+    BROKER_URL: amqp://platform:${RABBITMQ_PASSWORD:?required}@rabbitmq:5672/platform
+    AUTH_MODE: open
+  restart: unless-stopped
+  depends_on:
+    postgres: {condition: service_healthy}
+    rabbitmq: {condition: service_healthy}
+    migrate: {condition: service_completed_successfully}
+services:
+  postgres:
+    image: docker.io/library/postgres:18.6
+    environment:
+      POSTGRES_USER: platform
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+      POSTGRES_DB: platform
+    volumes: ["pg:/var/lib/postgresql"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U platform -d platform"]
+      interval: 5s
+      retries: 30
+    restart: unless-stopped
+  rabbitmq-permissions:
+    image: docker.io/library/rabbitmq:4.2.1-management
+    user: "0:0"
+    entrypoint: ["sh", "-c", "chown -R 999:999 /var/lib/rabbitmq"]
+    volumes: ["mq:/var/lib/rabbitmq"]
+  rabbitmq:
+    image: docker.io/library/rabbitmq:4.2.1-management
+    user: "999:999"
+    hostname: platform-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: platform
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:?required}
+      RABBITMQ_DEFAULT_VHOST: platform
+    volumes: ["mq:/var/lib/rabbitmq"]
+    depends_on:
+      rabbitmq-permissions: {condition: service_completed_successfully}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      retries: 30
+    restart: unless-stopped
+  migrate:
+    <<: *app
+    command: ["alembic", "upgrade", "head"]
+    restart: "no"
+    depends_on:
+      postgres: {condition: service_healthy}
+  api:
+    <<: *app
+    environment:
+      <<: *app-env
+      PLATFORM_SECRET_KEY_FILE: /run/kraken-secrets/master.key
+      REPORT_EXPORT_DIR: /var/lib/artemis/report-exports
+    volumes:
+      - "${PLATFORM_SECRET_KEY_HOST_FILE:?required}:/run/kraken-secrets/master.key:ro"
+      - "${REPORT_EXPORT_HOST_DIR:-../../.runtime/report-exports}:/var/lib/artemis/report-exports"
+  scheduler:
+    <<: *app
+    command: ["python", "-m", "control_plane.entrypoints.scheduler"]
+  publisher:
+    <<: *app
+    command: ["python", "-m", "control_plane.entrypoints.publisher"]
+  worker:
+    <<: *app
+    command: ["celery", "-A", "control_plane.entrypoints.worker:app", "worker", "--concurrency=2", "--loglevel=INFO"]
+  gateway:
+    build:
+      context: ../..
+      dockerfile: deploy/compose/Web.Dockerfile
+    environment:
+      PLATFORM_HOST: ${PLATFORM_HOST:?required}
+    ports: ["443:443"]
+    volumes: ["caddy:/data"]
+    depends_on: [api]
+    restart: unless-stopped
+volumes:
+  pg:
+  mq:
+  caddy:

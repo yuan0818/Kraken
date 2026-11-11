@@ -1,0 +1,25 @@
+.venv/
+.bootstrap/
+.runtime/
+.env
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+node_modules/
+dist/
+*.egg-info/
+.coverage
+.DS_Store
+.playwright-cli/
+output/
+*.tsbuildinfo
+
+# Local credentials and private keys
+.env.*
+*.env
+*.pem
+*.key
+!.env.example
+!*.env.example
+.idea/

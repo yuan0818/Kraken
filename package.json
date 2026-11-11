@@ -1,0 +1,1 @@
+{"name":"kraken","private":true,"packageManager":"pnpm@11.25.0","scripts":{"build":"pnpm --filter @kraken/web build","typecheck":"pnpm --filter @kraken/web typecheck"},"devDependencies":{"openapi-typescript":"^7.10.1","prettier":"^3.9.10"}}

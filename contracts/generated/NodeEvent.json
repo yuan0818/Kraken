@@ -1,0 +1,218 @@
+{
+  "$defs": {
+    "DeviceDiagnostics": {
+      "additionalProperties": false,
+      "properties": {
+        "serial": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Serial",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "collecting",
+            "complete",
+            "partial",
+            "unavailable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "reason": {
+          "default": "",
+          "maxLength": 300,
+          "title": "Reason",
+          "type": "string"
+        },
+        "incidents": {
+          "items": {
+            "$ref": "#/$defs/DeviceIncident"
+          },
+          "maxItems": 100,
+          "title": "Incidents",
+          "type": "array"
+        },
+        "truncated": {
+          "default": false,
+          "title": "Truncated",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "serial",
+        "status"
+      ],
+      "title": "DeviceDiagnostics",
+      "type": "object"
+    },
+    "DeviceIncident": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "anr",
+            "crash"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "device_at": {
+          "format": "date-time",
+          "title": "Device At",
+          "type": "string"
+        },
+        "occurred_at": {
+          "format": "date-time",
+          "title": "Occurred At",
+          "type": "string"
+        },
+        "process": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Process",
+          "type": "string"
+        },
+        "pid": {
+          "minimum": 0,
+          "title": "Pid",
+          "type": "integer"
+        },
+        "detail": {
+          "maxLength": 1200,
+          "title": "Detail",
+          "type": "string"
+        },
+        "raw": {
+          "maxLength": 2500,
+          "title": "Raw",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "device_at",
+        "occurred_at",
+        "process",
+        "pid",
+        "detail",
+        "raw"
+      ],
+      "title": "DeviceIncident",
+      "type": "object"
+    },
+    "Verdict": {
+      "enum": [
+        "not_evaluated",
+        "pass",
+        "fail",
+        "blocked",
+        "inconclusive"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "protocol_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Protocol Version",
+      "type": "integer"
+    },
+    "command_id": {
+      "format": "uuid",
+      "title": "Command Id",
+      "type": "string"
+    },
+    "attempt_id": {
+      "format": "uuid",
+      "title": "Attempt Id",
+      "type": "string"
+    },
+    "lease_generation": {
+      "exclusiveMinimum": 0,
+      "title": "Lease Generation",
+      "type": "integer"
+    },
+    "kind": {
+      "enum": [
+        "accepted",
+        "ready",
+        "started",
+        "finished",
+        "cancelled",
+        "rejected",
+        "diagnostics"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "cleanup": {
+      "default": "pending",
+      "enum": [
+        "pending",
+        "verified",
+        "failed"
+      ],
+      "title": "Cleanup",
+      "type": "string"
+    },
+    "evidence": {
+      "default": "missing",
+      "enum": [
+        "missing",
+        "partial",
+        "complete"
+      ],
+      "title": "Evidence",
+      "type": "string"
+    },
+    "verdict": {
+      "$ref": "#/$defs/Verdict",
+      "default": "not_evaluated"
+    },
+    "reason": {
+      "default": "",
+      "title": "Reason",
+      "type": "string"
+    },
+    "simulation": {
+      "default": true,
+      "title": "Simulation",
+      "type": "boolean"
+    },
+    "diagnostics": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DeviceDiagnostics"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "seq": {
+      "exclusiveMinimum": 0,
+      "title": "Seq",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "command_id",
+    "attempt_id",
+    "lease_generation",
+    "kind",
+    "seq"
+  ],
+  "title": "NodeEvent",
+  "type": "object"
+}

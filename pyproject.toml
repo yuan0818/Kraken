@@ -1,0 +1,27 @@
+[project]
+name = "kraken"
+version = "0.1.0"
+requires-python = ">=3.12,<3.15"
+dependencies = ["platform-control-plane", "platform-node-agent"]
+
+[tool.uv.workspace]
+members = ["apps/control-plane", "apps/node-agent", "packages/contracts", "packages/identity"]
+
+[tool.uv.sources]
+platform-control-plane = { workspace = true }
+platform-node-agent = { workspace = true }
+platform-contracts = { workspace = true }
+platform-identity = { workspace = true }
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1", "httpx>=0.28,<1"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["integration: requires a dedicated PostgreSQL database", "stack: requires running API, RabbitMQ and workers"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

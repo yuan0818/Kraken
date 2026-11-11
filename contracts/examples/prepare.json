@@ -1,0 +1,14 @@
+{
+  "protocol_version": 1,
+  "command_id": "00000000-0000-4000-8000-000000000001",
+  "attempt_id": "00000000-0000-4000-8000-000000000002",
+  "node_id": "sim-linux-01",
+  "device_id": "00000000-0000-4000-8000-000000000003",
+  "serial": "SIM-001",
+  "lease_generation": 1,
+  "kind": "prepare",
+  "expires_at": "2030-01-01T00:00:00Z",
+  "content": null,
+  "version_id": null,
+  "simulation": true
+}

@@ -1,0 +1,327 @@
+{
+  "$defs": {
+    "CaseContent": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "default": 1,
+          "enum": [
+            1,
+            2
+          ],
+          "title": "Schema Version",
+          "type": "integer"
+        },
+        "title": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "target": {
+          "enum": [
+            "app",
+            "android_os"
+          ],
+          "title": "Target",
+          "type": "string"
+        },
+        "steps": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 200,
+          "minItems": 1,
+          "title": "Steps",
+          "type": "array"
+        },
+        "assertions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 200,
+          "minItems": 1,
+          "title": "Assertions",
+          "type": "array"
+        },
+        "steps_markdown": {
+          "anyOf": [
+            {
+              "maxLength": 64000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Steps Markdown"
+        },
+        "assertions_markdown": {
+          "anyOf": [
+            {
+              "maxLength": 64000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assertions Markdown"
+        },
+        "required_tags": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Required Tags",
+          "type": "array"
+        },
+        "case_code": {
+          "default": "",
+          "title": "Case Code",
+          "type": "string"
+        },
+        "purpose": {
+          "default": "",
+          "maxLength": 4000,
+          "title": "Purpose",
+          "type": "string"
+        },
+        "preconditions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Preconditions",
+          "type": "array"
+        },
+        "module_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Module Id"
+        },
+        "app_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "App Id"
+        },
+        "android_version_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Android Version Ids",
+          "type": "array"
+        },
+        "app_version_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "App Version Ids",
+          "type": "array"
+        },
+        "device_model_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Device Model Ids",
+          "type": "array"
+        },
+        "chip_platform_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "maxItems": 100,
+          "title": "Chip Platform Ids",
+          "type": "array"
+        },
+        "level": {
+          "default": "P2",
+          "enum": [
+            "P0",
+            "P1",
+            "P2",
+            "P3"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "status": {
+          "default": "active",
+          "enum": [
+            "draft",
+            "active",
+            "disabled"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "catalog_snapshot": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Catalog Snapshot",
+          "type": "object"
+        }
+      },
+      "required": [
+        "title",
+        "target",
+        "steps",
+        "assertions"
+      ],
+      "title": "CaseContent",
+      "type": "object"
+    },
+    "ExecutionModelRef": {
+      "additionalProperties": false,
+      "properties": {
+        "config_id": {
+          "format": "uuid",
+          "title": "Config Id",
+          "type": "string"
+        },
+        "revision": {
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "config_id",
+        "revision"
+      ],
+      "title": "ExecutionModelRef",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "protocol_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Protocol Version",
+      "type": "integer"
+    },
+    "command_id": {
+      "format": "uuid",
+      "title": "Command Id",
+      "type": "string"
+    },
+    "attempt_id": {
+      "format": "uuid",
+      "title": "Attempt Id",
+      "type": "string"
+    },
+    "node_id": {
+      "title": "Node Id",
+      "type": "string"
+    },
+    "device_id": {
+      "format": "uuid",
+      "title": "Device Id",
+      "type": "string"
+    },
+    "serial": {
+      "title": "Serial",
+      "type": "string"
+    },
+    "lease_generation": {
+      "exclusiveMinimum": 0,
+      "title": "Lease Generation",
+      "type": "integer"
+    },
+    "kind": {
+      "enum": [
+        "prepare",
+        "execute",
+        "cancel"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "content": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/CaseContent"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "version_id": {
+      "anyOf": [
+        {
+          "format": "uuid",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Version Id"
+    },
+    "simulation": {
+      "default": true,
+      "title": "Simulation",
+      "type": "boolean"
+    },
+    "execution_model": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExecutionModelRef"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "command_id",
+    "attempt_id",
+    "node_id",
+    "device_id",
+    "serial",
+    "lease_generation",
+    "kind",
+    "expires_at"
+  ],
+  "title": "Command",
+  "type": "object"
+}
