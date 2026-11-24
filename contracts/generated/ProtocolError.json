@@ -1,0 +1,41 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "error": {
+      "enum": [
+        "stale_connection",
+        "out_of_order",
+        "event_conflict",
+        "unknown_command",
+        "lease_mismatch",
+        "expired",
+        "unsupported_version",
+        "invalid_transition"
+      ],
+      "title": "Error",
+      "type": "string"
+    },
+    "detail": {
+      "default": "",
+      "title": "Detail",
+      "type": "string"
+    },
+    "expected_seq": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expected Seq"
+    }
+  },
+  "required": [
+    "error"
+  ],
+  "title": "ProtocolError",
+  "type": "object"
+}

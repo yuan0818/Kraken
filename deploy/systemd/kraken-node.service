@@ -1,0 +1,21 @@
+[Unit]
+Description=Kraken node runtime (M0 simulator only)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=kraken
+Group=kraken
+WorkingDirectory=/opt/kraken
+EnvironmentFile=/etc/kraken/node.env
+ExecStart=/opt/kraken/.venv/bin/python -m node_agent.transport.client
+Restart=on-failure
+RestartSec=3
+StateDirectory=kraken
+UMask=0077
+NoNewPrivileges=true
+KillMode=control-group
+
+[Install]
+WantedBy=multi-user.target

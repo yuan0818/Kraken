@@ -1,0 +1,17 @@
+{$PLATFORM_HOST:platform.internal} {
+    tls internal
+    handle /api/* {
+        reverse_proxy api:8100
+    }
+    handle /healthz {
+        reverse_proxy api:8100
+    }
+    handle /readyz {
+        reverse_proxy api:8100
+    }
+    handle {
+        root * /srv
+        try_files {path} /index.html
+        file_server
+    }
+}

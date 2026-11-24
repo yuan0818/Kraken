@@ -1,0 +1,22 @@
+.git
+.venv
+.bootstrap
+.runtime
+.env
+node_modules
+**/node_modules
+**/dist
+output
+.pytest_cache
+.ruff_cache
+**/__pycache__
+.playwright-cli
+*.tsbuildinfo
+
+# Local credentials and private keys
+.env.*
+*.env
+*.pem
+*.key
+!.env.example
+!*.env.example
